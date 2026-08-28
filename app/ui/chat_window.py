@@ -192,6 +192,10 @@ class ChatWindow(QMainWindow):
         self.event_bus.pet_state_changed.emit("talking")
         self.status_lbl.setText("")
 
+        # Display AI response in chat UI
+        self._append_message_ui("assistant", response_text)
+        self.event_bus.pet_message_spoken.emit(response_text)
+
         # Handle parsed computer automation actions
         if actions:
             logger.info(f"AI requested computer actions: {actions}")
@@ -210,7 +214,8 @@ class ChatWindow(QMainWindow):
                     self._append_message_ui("system", f"Action Failed: {msg}")
 
     def _on_ai_response(self, response_text: str):
-        self._append_message_ui("assistant", response_text)
+        # Fallback signal handler if not handled in process_user_message
+        pass
 
     def _on_ai_error(self, err_msg: str):
         self.event_bus.pet_state_changed.emit("error")
